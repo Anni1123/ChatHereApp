@@ -1,5 +1,6 @@
 package com.example.letschatapp;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.ProgressDialog;
@@ -90,6 +91,21 @@ public class RegisterActivity extends AppCompatActivity {
             loadingBar.setMessage("Please wait, while we wre creating new account for you...");
             loadingBar.setCanceledOnTouchOutside(true);
             loadingBar.show();
+            mAuth.createUserWithEmailAndPassword(email,password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                @Override
+                public void onComplete(@NonNull Task<AuthResult> task) {
+                  if(task.isSuccessful()){
+                      SendUserToLoginActivity();
+                      Toast.makeText(RegisterActivity.this,"Successfully Created",Toast.LENGTH_LONG).show();
+                      loadingBar.dismiss();
+                  }
+                  else {
+                      String message=task.getException().toString();
+                      Toast.makeText(RegisterActivity.this,"Error:"+message,Toast.LENGTH_LONG).show();
+                      loadingBar.dismiss();
+                  }
+                }
+            });
         }
     }
 

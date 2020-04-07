@@ -99,6 +99,21 @@ public class LoginActivity extends AppCompatActivity {
             loadingBar.setMessage("Please wait....");
             loadingBar.setCanceledOnTouchOutside(true);
             loadingBar.show();
+            mAuth.signInWithEmailAndPassword(email,password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                @Override
+                public void onComplete(@NonNull Task<AuthResult> task) {
+                    if(task.isSuccessful()){
+                      SendUserToMainActivity();
+                        Toast.makeText(LoginActivity.this,"Successfully Created",Toast.LENGTH_LONG).show();
+                        loadingBar.dismiss();
+                    }
+                    else {
+                        String message=task.getException().toString();
+                        Toast.makeText(LoginActivity.this,"Error:"+message,Toast.LENGTH_LONG).show();
+                        loadingBar.dismiss();
+                    }
+                }
+            });
         }
     }
 
