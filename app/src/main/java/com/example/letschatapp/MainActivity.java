@@ -95,6 +95,11 @@ public class MainActivity extends AppCompatActivity {
         startActivity(sintent);
         finish();
     }
+    private void sendUsertofindFriendActivity() {
+        Intent fintent=new Intent(MainActivity.this,FindFriendsActivity.class);
+        startActivity(fintent);
+        finish();
+    }
 
     private void sendtoLoginActivtiy() {
         Intent intent=new Intent(MainActivity.this,LoginActivity.class);
@@ -114,6 +119,7 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
          super.onOptionsItemSelected(item);
          if(item.getItemId()==R.id.main_find_friend_option){
+             sendUsertofindFriendActivity();
          }
          if(item.getItemId()==R.id.main_logout_option){
 
