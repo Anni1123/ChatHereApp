@@ -51,6 +51,14 @@ public class SettingsActivity extends AppCompatActivity {
         currentUserID = mAuth.getCurrentUser().getUid();
         RootRef = FirebaseDatabase.getInstance().getReference();
         InitializeFields();
+        userName.setVisibility(View.INVISIBLE);
+        UpdateAccountSettings.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                UpdateSettings();
+            }
+        });
+        RetrieveUserInfo();
     }
     private void InitializeFields()
     {
@@ -58,13 +66,7 @@ public class SettingsActivity extends AppCompatActivity {
         userName = (EditText) findViewById(R.id.set_user_name);
         userStatus = (EditText) findViewById(R.id.set_profile_status);
         userProfileImage = (CircleImageView) findViewById(R.id.set_profile_image);
-           UpdateAccountSettings.setOnClickListener(new View.OnClickListener() {
-            @Override
-             public void onClick(View v) {
-        UpdateSettings();
-    }
-});
-        RetrieveUserInfo();
+
     }
 
     private void RetrieveUserInfo() {
