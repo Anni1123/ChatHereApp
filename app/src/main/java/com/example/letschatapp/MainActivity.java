@@ -67,7 +67,6 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
          super.onOptionsItemSelected(item);
          if(item.getItemId()==R.id.main_find_friend_option){
-
          }
          if(item.getItemId()==R.id.main_logout_option){
 
@@ -75,6 +74,7 @@ public class MainActivity extends AppCompatActivity {
              sendtoLoginActivtiy();
          }
          if (item.getItemId()==R.id.main_settings_option){
+             startActivity(new Intent(MainActivity.this,SettingsActivity.class));
 
          }
          return true;
