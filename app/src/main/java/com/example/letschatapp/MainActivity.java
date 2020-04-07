@@ -98,7 +98,6 @@ public class MainActivity extends AppCompatActivity {
     private void sendUsertofindFriendActivity() {
         Intent fintent=new Intent(MainActivity.this,FindFriendsActivity.class);
         startActivity(fintent);
-        finish();
     }
 
     private void sendtoLoginActivtiy() {
