@@ -9,12 +9,16 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -32,6 +36,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         mAuth = FirebaseAuth.getInstance();
         currentUser = mAuth.getCurrentUser();
+        RootRef=FirebaseDatabase.getInstance().getReference();
         toolbar=(Toolbar)findViewById(R.id.main_page_toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("Lets Chat");
@@ -49,11 +54,47 @@ public class MainActivity extends AppCompatActivity {
         if(currentUser==null){
             sendtoLoginActivtiy();
         }
+        else {
+            VerifyUserExistence();
+        }
+    }
+
+    private void VerifyUserExistence() {
+        String currentUserID = mAuth.getCurrentUser().getUid();
+
+        RootRef.child("Users").child(currentUserID).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot)
+            {
+                if ((dataSnapshot.child("name").exists()))
+                {
+                    Toast.makeText(MainActivity.this, "Welcome", Toast.LENGTH_SHORT).show();
+                }
+                else
+                {
+                    sendUsertoSettingActivity();
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    private void sendUsertoSettingActivity() {
+        Intent sintent=new Intent(MainActivity.this,SettingsActivity.class);
+        sintent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(sintent);
+        finish();
     }
 
     private void sendtoLoginActivtiy() {
         Intent intent=new Intent(MainActivity.this,LoginActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
+        finish();
     }
 
     @Override
@@ -74,8 +115,7 @@ public class MainActivity extends AppCompatActivity {
              sendtoLoginActivtiy();
          }
          if (item.getItemId()==R.id.main_settings_option){
-             startActivity(new Intent(MainActivity.this,SettingsActivity.class));
-
+            sendUsertoSettingActivity();
          }
          return true;
     }
