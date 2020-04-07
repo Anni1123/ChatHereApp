@@ -14,6 +14,12 @@
 
     </item>
     <item
+        android:title="Group Chat"
+        android:id="@+id/main_group_chat_option"
+        app:showAsAction="never">
+
+    </item>
+    <item
         android:title="Logout"
         android:id="@+id/main_logout_option"
         app:showAsAction="never">
