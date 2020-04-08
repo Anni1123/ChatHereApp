@@ -90,10 +90,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void sendUsertoSettingActivity() {
-        Intent sintent=new Intent(MainActivity.this,SettingsActivity.class);
-        sintent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        Intent sintent = new Intent(MainActivity.this, SettingsActivity.class);
         startActivity(sintent);
-        finish();
     }
     private void sendUsertofindFriendActivity() {
         Intent fintent=new Intent(MainActivity.this,FindFriendsActivity.class);
