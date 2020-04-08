@@ -86,8 +86,7 @@ public class GroupFragment extends Fragment {
         list_view.setAdapter(arrayAdapter);
     }
 
-
-
+    
 
     private void RetrieveAndDisplayGroups()
     {
