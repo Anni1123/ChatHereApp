@@ -291,27 +291,11 @@ public class ProfileActivity extends AppCompatActivity {
                                         public void onComplete(@NonNull Task<Void> task)
                                         {
                                             if (task.isSuccessful())
-                                            {
-                                                NotificationRef.child(receiverUserID).child(senderUserID).removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
-                                                    @Override
-                                                    public void onComplete(@NonNull Task<Void> task) {
-                                                        if (task.isSuccessful()){
-                                                            NotificationRef.child(senderUserID).child(receiverUserID).removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
-                                                                @Override
-                                                                public void onComplete(@NonNull Task<Void> task) {
-                                                                    SendMessageRequestButton.setEnabled(true);
+                                            {           SendMessageRequestButton.setEnabled(true);
                                                                     Current_State = "new";
                                                                     SendMessageRequestButton.setText("Send Message");
-
                                                                     DeclineMessageRequestButton.setVisibility(View.INVISIBLE);
                                                                     DeclineMessageRequestButton.setEnabled(false);
-                                                                }
-                                                            });
-
-                                                        }
-                                                    }
-                                                });
-
                                             }
                                         }
                                     });
