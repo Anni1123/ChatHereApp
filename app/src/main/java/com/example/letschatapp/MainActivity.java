@@ -26,46 +26,97 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.HashMap;
+
 public class MainActivity extends AppCompatActivity {
 
-    private Toolbar toolbar;
-    private ViewPager viewPager;
-    private TabLayout tabLayout;
-    private TabAcessorAdapter tabAcessorAdapter;
+    private Toolbar mToolbar;
+    private ViewPager myViewPager;
+    private TabLayout myTabLayout;
+    private TabAcessorAdapter myTabsAccessorAdapter;
+
     private FirebaseUser currentUser;
     private FirebaseAuth mAuth;
     private DatabaseReference RootRef;
     private String currentUserID;
+
+
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+
         mAuth = FirebaseAuth.getInstance();
         currentUser = mAuth.getCurrentUser();
-        RootRef=FirebaseDatabase.getInstance().getReference();
-        toolbar=(Toolbar)findViewById(R.id.main_page_toolbar);
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("Lets Chat");
-        viewPager=(ViewPager)findViewById(R.id.main_tabs_pager);
-        tabAcessorAdapter=new TabAcessorAdapter(getSupportFragmentManager());
-        viewPager.setAdapter(tabAcessorAdapter);
-        tabLayout=(TabLayout)findViewById(R.id.main_tabs);
-        tabLayout.setupWithViewPager(viewPager);
+        currentUserID = mAuth.getCurrentUser().getUid();
+        RootRef = FirebaseDatabase.getInstance().getReference();
 
+
+        mToolbar = (Toolbar) findViewById(R.id.main_page_toolbar);
+        setSupportActionBar(mToolbar);
+        getSupportActionBar().setTitle("WhatsApp");
+
+
+        myViewPager = (ViewPager) findViewById(R.id.main_tabs_pager);
+        myTabsAccessorAdapter=new TabAcessorAdapter(getSupportFragmentManager());
+        myViewPager.setAdapter(myTabsAccessorAdapter);
+
+
+        myTabLayout = (TabLayout) findViewById(R.id.main_tabs);
+        myTabLayout.setupWithViewPager(myViewPager);
     }
+
 
     @Override
-    protected void onStart() {
+    protected void onStart()
+    {
         super.onStart();
-        if(currentUser==null){
-            sendtoLoginActivtiy();
+
+        if (currentUser == null)
+        {
+            SendUserToLoginActivity();
         }
-        else {
-            VerifyUserExistence();
+        else
+        {
+            updateUserStatus("online");
+
+            VerifyUserExistance();
         }
     }
 
-    private void VerifyUserExistence() {
+
+    @Override
+    protected void onStop()
+    {
+        super.onStop();
+
+        if (currentUser != null)
+        {
+            updateUserStatus("offline");
+        }
+    }
+
+
+
+    @Override
+    protected void onDestroy()
+    {
+        super.onDestroy();
+
+        if (currentUser != null)
+        {
+            updateUserStatus("offline");
+        }
+    }
+
+
+
+    private void VerifyUserExistance()
+    {
         String currentUserID = mAuth.getCurrentUser().getUid();
 
         RootRef.child("Users").child(currentUserID).addValueEventListener(new ValueEventListener() {
@@ -78,7 +129,7 @@ public class MainActivity extends AppCompatActivity {
                 }
                 else
                 {
-                    sendUsertoSettingActivity();
+                    SendUserToSettingsActivity();
                 }
             }
 
@@ -89,59 +140,61 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private void sendUsertoSettingActivity() {
-        Intent sintent = new Intent(MainActivity.this, SettingsActivity.class);
-        startActivity(sintent);
-    }
-    private void sendUsertofindFriendActivity() {
-        Intent fintent=new Intent(MainActivity.this,FindFriendsActivity.class);
-        startActivity(fintent);
-    }
 
-    private void sendtoLoginActivtiy() {
-        Intent intent=new Intent(MainActivity.this,LoginActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        startActivity(intent);
-        finish();
-    }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
+    public boolean onCreateOptionsMenu(Menu menu)
+    {
         super.onCreateOptionsMenu(menu);
-        getMenuInflater().inflate(R.menu.options_menu,menu);
+
+        getMenuInflater().inflate(R.menu.options_menu, menu);
+
         return true;
     }
 
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-         super.onOptionsItemSelected(item);
-         if(item.getItemId()==R.id.main_find_friend_option){
-             sendUsertofindFriendActivity();
-         }
-         if(item.getItemId()==R.id.main_logout_option){
 
-             mAuth.signOut();
-             sendtoLoginActivtiy();
-         }
-        if(item.getItemId()==R.id.main_group_chat_option){
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item)
+    {
+        super.onOptionsItemSelected(item);
+
+        if (item.getItemId() == R.id.main_logout_option)
+        {
+            updateUserStatus("offline");
+            mAuth.signOut();
+            SendUserToLoginActivity();
+        }
+        if (item.getItemId() == R.id.main_settings_option)
+        {
+            SendUserToSettingsActivity();
+        }
+        if (item.getItemId() == R.id.main_group_chat_option)
+        {
             RequestNewGroup();
         }
-         if (item.getItemId()==R.id.main_settings_option){
-            sendUsertoSettingActivity();
-         }
-         return true;
+        if (item.getItemId() == R.id.main_find_friend_option)
+        {
+            SendUserToFindFriendsActivity();
+        }
+
+        return true;
     }
 
-    private void RequestNewGroup() {
-        AlertDialog.Builder builder=new AlertDialog.Builder(MainActivity.this,R.style.AlertDialog);
-        builder.setTitle("Enter Group Name:");
-        final EditText groupnameField=new EditText(MainActivity.this);
-        groupnameField.setHint("Eg...Friends Group");
-        builder.setView(groupnameField);
+
+    private void RequestNewGroup()
+    {
+        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this, R.style.AlertDialog);
+        builder.setTitle("Enter Group Name :");
+
+        final EditText groupNameField = new EditText(MainActivity.this);
+        groupNameField.setHint("e.g Coding Cafe");
+        builder.setView(groupNameField);
+
         builder.setPositiveButton("Create", new DialogInterface.OnClickListener() {
             @Override
-            public void onClick(DialogInterface dialog, int which) {
-                String groupName = groupnameField.getText().toString();
+            public void onClick(DialogInterface dialogInterface, int i)
+            {
+                String groupName = groupNameField.getText().toString();
 
                 if (TextUtils.isEmpty(groupName))
                 {
@@ -153,6 +206,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+
         builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i)
@@ -164,7 +218,10 @@ public class MainActivity extends AppCompatActivity {
         builder.show();
     }
 
-    private void CreateNewGroup(final String groupName) {
+
+
+    private void CreateNewGroup(final String groupName)
+    {
         RootRef.child("Groups").child(groupName).setValue("")
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
@@ -176,5 +233,52 @@ public class MainActivity extends AppCompatActivity {
                         }
                     }
                 });
+    }
+
+
+
+    private void SendUserToLoginActivity()
+    {
+        Intent loginIntent = new Intent(MainActivity.this, LoginActivity.class);
+        loginIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(loginIntent);
+
+    }
+
+    private void SendUserToSettingsActivity()
+    {
+        Intent settingsIntent = new Intent(MainActivity.this, SettingsActivity.class);
+        startActivity(settingsIntent);
+    }
+
+
+    private void SendUserToFindFriendsActivity()
+    {
+        Intent findFriendsIntent = new Intent(MainActivity.this, FindFriendsActivity.class);
+        startActivity(findFriendsIntent);
+    }
+
+
+
+    private void updateUserStatus(String state)
+    {
+        String saveCurrentTime, saveCurrentDate;
+
+        Calendar calendar = Calendar.getInstance();
+
+        SimpleDateFormat currentDate = new SimpleDateFormat("MMM dd, yyyy");
+        saveCurrentDate = currentDate.format(calendar.getTime());
+
+        SimpleDateFormat currentTime = new SimpleDateFormat("hh:mm a");
+        saveCurrentTime = currentTime.format(calendar.getTime());
+
+        HashMap<String, Object> onlineStateMap = new HashMap<>();
+        onlineStateMap.put("time", saveCurrentTime);
+        onlineStateMap.put("date", saveCurrentDate);
+        onlineStateMap.put("state", state);
+
+        RootRef.child("Users").child(currentUserID).child("userState")
+                .updateChildren(onlineStateMap);
+
     }
 }
