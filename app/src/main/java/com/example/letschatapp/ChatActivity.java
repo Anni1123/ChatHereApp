@@ -332,7 +332,7 @@ public class ChatActivity extends AppCompatActivity
             }
 
             CropImage.activity(ImageUri)
-                    .setAspectRatio(1, 1)
+                    .setAspectRatio(4, 3)
                     .start(this);
         }
         if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
@@ -387,10 +387,12 @@ public class ChatActivity extends AppCompatActivity
                                    {
                                        if (task.isSuccessful())
                                        {
+                                           MessageInputText.setText("");
                                            Toast.makeText(ChatActivity.this, "Message Sent Successfully...", Toast.LENGTH_SHORT).show();
                                        }
                                        else
                                        {
+                                           MessageInputText.setText("");
                                            Toast.makeText(ChatActivity.this, "Error", Toast.LENGTH_SHORT).show();
                                        }
                                        MessageInputText.setText("");
