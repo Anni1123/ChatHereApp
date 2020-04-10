@@ -95,7 +95,7 @@ public class MainActivity extends AppCompatActivity {
  FirebaseUser currentUser = mAuth.getCurrentUser();
         if (currentUser != null)
         {
-            updateUserStatus("offline");
+            updateUserStatus("online");
         }
     }
 

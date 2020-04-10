@@ -5,7 +5,10 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ImageViewActivity">
-
+    <include
+        android:id="@+id/image_toolbar"
+        layout="@layout/app_bar_layout">
+    </include>
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
