@@ -17,6 +17,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
@@ -26,6 +27,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
@@ -39,7 +41,7 @@ public class ChatFragment extends Fragment {
 
         private View PrivateChatsView;
         private RecyclerView chatsList;
-
+    EditText search_users;
         private DatabaseReference ChatsRef, UsersRef;
         private FirebaseAuth mAuth;
         private String currentUserID="";
@@ -61,8 +63,6 @@ public class ChatFragment extends Fragment {
             currentUserID = mAuth.getCurrentUser().getUid();
             ChatsRef = FirebaseDatabase.getInstance().getReference().child("Contacts").child(currentUserID);
             UsersRef = FirebaseDatabase.getInstance().getReference().child("Users");
-
-
             chatsList = (RecyclerView) PrivateChatsView.findViewById(R.id.chats_list);
             chatsList.setLayoutManager(new LinearLayoutManager(getContext()));
 
@@ -75,11 +75,12 @@ public class ChatFragment extends Fragment {
         public void onStart()
         {
             super.onStart();
-
-
+            Query query = ChatsRef
+                    .limitToLast(50)
+                    .orderByPriority();
             FirebaseRecyclerOptions<Contacts> options =
                     new FirebaseRecyclerOptions.Builder<Contacts>()
-                            .setQuery(ChatsRef, Contacts.class)
+                            .setQuery(query, Contacts.class)
                             .build();
 
 
@@ -157,6 +158,7 @@ public class ChatFragment extends Fragment {
                             View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.user_display_layout, viewGroup, false);
                             return new ChatsViewHolder(view);
                         }
+
                     };
 
             chatsList.setAdapter(adapter);

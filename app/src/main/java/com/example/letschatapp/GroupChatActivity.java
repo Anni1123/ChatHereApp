@@ -181,9 +181,8 @@ public class GroupChatActivity extends AppCompatActivity {
             String chatMessage = (String) ((DataSnapshot)iterator.next()).getValue();
             String chatName = (String) ((DataSnapshot)iterator.next()).getValue();
             String chatTime = (String) ((DataSnapshot)iterator.next()).getValue();
-            displayTextMessages.setBackgroundResource(R.drawable.sender_messages_layout);
-            displayTextMessages.setTextColor(Color.BLACK);
-            displayTextMessages.append(chatName + " :\n" + chatMessage + "\n" + chatTime + "     " + chatDate + "\n\n\n");
+
+            displayTextMessages.append(chatName + " :\n" + chatMessage + "\n" + chatTime + "     " + chatDate + "\n\n");
 
             mScrollView.fullScroll(ScrollView.FOCUS_DOWN);
         }
