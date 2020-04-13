@@ -61,7 +61,7 @@ public class ChatFragment extends Fragment {
 
             mAuth = FirebaseAuth.getInstance();
             currentUserID = mAuth.getCurrentUser().getUid();
-            ChatsRef = FirebaseDatabase.getInstance().getReference().child("Contacts").child(currentUserID);
+            ChatsRef = FirebaseDatabase.getInstance().getReference().child("Messages").child(currentUserID);
             UsersRef = FirebaseDatabase.getInstance().getReference().child("Users");
             chatsList = (RecyclerView) PrivateChatsView.findViewById(R.id.chats_list);
             chatsList.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -77,12 +77,11 @@ public class ChatFragment extends Fragment {
             super.onStart();
             Query query = ChatsRef
                     .limitToLast(50)
-                    .orderByPriority();
+                   .orderByValue();
             FirebaseRecyclerOptions<Contacts> options =
                     new FirebaseRecyclerOptions.Builder<Contacts>()
                             .setQuery(query, Contacts.class)
                             .build();
-
 
             FirebaseRecyclerAdapter<Contacts, ChatsViewHolder> adapter =
                     new FirebaseRecyclerAdapter<Contacts, ChatsViewHolder>(options) {

@@ -1,6 +1,7 @@
 package com.example.letschatapp;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -120,13 +121,24 @@ public class ContactsFragment extends Fragment
 
                             if (dataSnapshot.hasChild("image"))
                             {
-                                String userImage = dataSnapshot.child("image").getValue().toString();
-                                String profileName = dataSnapshot.child("name").getValue().toString();
+                                final String userImage = dataSnapshot.child("image").getValue().toString();
+                                final String profileName = dataSnapshot.child("name").getValue().toString();
                                 String profileStatus = dataSnapshot.child("status").getValue().toString();
 
                                 holder.userName.setText(profileName);
                                 holder.userStatus.setText(profileStatus);
                                 Picasso.with(getContext()).load(userImage).placeholder(R.drawable.profile_image).into(holder.profileImage);
+                                holder.itemView.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view)
+                                    {
+                                        Intent chatIntent = new Intent(getContext(), ChatActivity.class);
+                                        chatIntent.putExtra("visit_user_id", userIDs);
+                                        chatIntent.putExtra("visit_user_name", profileName);
+                                        chatIntent.putExtra("visit_image", userImage);
+                                        startActivity(chatIntent);
+                                    }
+                                });
                             }
                             else
                             {
