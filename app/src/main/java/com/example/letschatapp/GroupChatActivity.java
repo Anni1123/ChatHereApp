@@ -1,8 +1,11 @@
 package com.example.letschatapp;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -31,11 +34,14 @@ import java.util.Iterator;
 public class GroupChatActivity extends AppCompatActivity {
 
     private androidx.appcompat.widget.Toolbar mToolbar;
-    private ImageButton SendMessageButton;
+    private ImageButton SendMessageButton,SendFile;
     private EditText userMessageInput;
     private ScrollView mScrollView;
     private TextView displayTextMessages;
     private FirebaseAuth mAuth;
+    private String checker="";
+    private static final int GalleryPick = 1;
+
     private DatabaseReference UsersRef, GroupNameRef, GroupMessageKeyRef;
 
     private String currentGroupName, currentUserID, currentUserName, currentDate, currentTime;
@@ -61,6 +67,47 @@ public class GroupChatActivity extends AppCompatActivity {
                 userMessageInput.setText("");
 
                 mScrollView.fullScroll(ScrollView.FOCUS_DOWN);
+            }
+        });
+        SendFile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                CharSequence options[]=new CharSequence[]{
+                        "Images",
+                        "Pdf Files",
+                        "Ms Word Files"
+                };
+                AlertDialog.Builder builder=new AlertDialog.Builder(GroupChatActivity.this);
+                builder.setTitle("Select Files");
+                builder.setItems(options, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        if(which==0){
+                            checker="image";
+                            Intent galleryIntent = new Intent();
+                            galleryIntent.setAction(Intent.ACTION_GET_CONTENT);
+                            galleryIntent.setType("image/*");
+                            startActivityForResult(galleryIntent, GalleryPick);
+                        }
+                        if(which==1){
+                            checker="pdf";
+                            Intent galleryIntent = new Intent();
+                            galleryIntent.setAction(Intent.ACTION_GET_CONTENT);
+                            galleryIntent.setType("application/pdf");
+                            startActivityForResult(galleryIntent, GalleryPick);
+
+                        }
+                        if(which==2){
+                            checker="files";
+                            Intent galleryIntent = new Intent();
+                            galleryIntent.setAction(Intent.ACTION_GET_CONTENT);
+                            galleryIntent.setType("application/docx");
+                            startActivityForResult(galleryIntent, GalleryPick);
+                        }
+
+                    }
+                });
+                builder.show();
             }
         });
 
@@ -114,7 +161,7 @@ public class GroupChatActivity extends AppCompatActivity {
         mToolbar = (Toolbar) findViewById(R.id.group_chat_bar_layout);
         setSupportActionBar(mToolbar);
         getSupportActionBar().setTitle(currentGroupName);
-
+        SendFile=(ImageButton)findViewById(R.id.send_file_btn);
         SendMessageButton = (ImageButton) findViewById(R.id.send_message_button);
         userMessageInput = (EditText) findViewById(R.id.input_group_message);
         displayTextMessages = (TextView) findViewById(R.id.group_chat_text_display);
