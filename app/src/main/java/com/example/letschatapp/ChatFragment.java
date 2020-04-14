@@ -19,6 +19,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
@@ -145,7 +146,7 @@ public class ChatFragment extends Fragment {
 
                                 @Override
                                 public void onCancelled(DatabaseError databaseError) {
-
+                                    Toast.makeText(getContext(),databaseError.getMessage(),Toast.LENGTH_LONG).show();
                                 }
                             });
                         }
@@ -163,8 +164,6 @@ public class ChatFragment extends Fragment {
             chatsList.setAdapter(adapter);
             adapter.startListening();
         }
-
-
 
 
         public static class  ChatsViewHolder extends RecyclerView.ViewHolder

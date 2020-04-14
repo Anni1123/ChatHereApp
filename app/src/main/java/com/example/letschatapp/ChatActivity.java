@@ -1,5 +1,6 @@
 package com.example.letschatapp;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -37,6 +38,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
@@ -67,6 +69,7 @@ public class ChatActivity extends AppCompatActivity
     private ImageButton SendMessageButton, SendFilesButton;
     private EditText MessageInputText;
 
+    private ProgressDialog progressDialog;
     private final List<Messages> messagesList = new ArrayList<>();
     private LinearLayoutManager linearLayoutManager;
     private MessageAdapter messageAdapter;
@@ -171,7 +174,7 @@ public class ChatActivity extends AppCompatActivity
         LayoutInflater layoutInflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View actionBarView = layoutInflater.inflate(R.layout.custom_chat_bar, null);
         actionBar.setCustomView(actionBarView);
-
+        progressDialog=new ProgressDialog(this);
         userName = (TextView) findViewById(R.id.custom_profile_name);
         userLastSeen = (TextView) findViewById(R.id.custom_user_last_seen);
         userImage = (CircleImageView) findViewById(R.id.custom_profile_image);
@@ -349,7 +352,8 @@ public class ChatActivity extends AppCompatActivity
 
                 final String messagePushID = userMessageKeyRef.getKey();
                 final StorageReference filepath = storageReference.child(messagePushID + "." + checker);
-                filepath.putFile(ImageUri).continueWithTask(new Continuation() {
+                filepath.putFile(ImageUri)
+                        .continueWithTask(new Continuation() {
                     @Override
                     public Object then(@NonNull Task task) throws Exception {
                         if (!task.isSuccessful()) {
@@ -377,6 +381,7 @@ public class ChatActivity extends AppCompatActivity
                             messageBodyDetails.put(messageSenderRef + "/" + messagePushID, messageTextBody);
                             messageBodyDetails.put(messageReceiverRef + "/" + messagePushID, messageTextBody);
                             RootRef.updateChildren(messageBodyDetails);
+
                         }
                     }
                 }).addOnFailureListener(new OnFailureListener() {
